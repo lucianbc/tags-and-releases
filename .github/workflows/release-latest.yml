@@ -1,0 +1,13 @@
+name: Release latest
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  call-release-base:
+    uses: ./.github/workflows/release-base.yml
+    with:
+      release_git_sha: ''
+      release_name: 'latest'
+

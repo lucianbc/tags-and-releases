@@ -1,0 +1,32 @@
+on:
+  workflow_call:
+    inputs:
+      release_git_sha:
+        type: string
+        description: The git sha of the commit from where the current release will be built from.
+        required: true
+      release_name:
+        type: string
+        required: true
+
+jobs:
+  build_artifacts:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout project
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.release_git_sha }}
+    - name: Get project hash
+      run: |
+        git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        echo "git_hash=$git_hash" >> $GITHUB_ENV
+    - name: Release files
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: "${{ inputs.release_name }}"
+        prerelease: true
+        title: "My File"
+        files: |
+          file.txt
